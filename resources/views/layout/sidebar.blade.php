@@ -38,6 +38,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('tugas.js') ? 'active' : '' }}" href="{{ route('tugas.js') }}">
+                <span class="menu-title">Tugas JS</span>
+                <i class="mdi mdi-code-tags menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pdfMenu" aria-expanded="false" aria-controls="pdfMenu">
                 <span class="menu-title">Generate PDF</span>
                 <i class="menu-arrow"></i>

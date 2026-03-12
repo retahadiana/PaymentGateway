@@ -80,3 +80,4 @@ Route::get('/barang/{id_barang}/edit', [BarangController::class, 'edit'])->middl
 Route::put('/barang/{id_barang}', [BarangController::class, 'update'])->middleware(['auth','session.user']);
 Route::delete('/barang/{id_barang}', [BarangController::class, 'destroy'])->middleware(['auth','session.user']);
 Route::post('/cetak-label', [BarangController::class, 'cetak'])->middleware(['auth','session.user']);
+Route::get('/tugas-js', fn () => view('tugas-js'))->middleware(['auth','session.user'])->name('tugas.js');
