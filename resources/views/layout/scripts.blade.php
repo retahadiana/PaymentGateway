@@ -7,6 +7,4 @@
 <script src="{{ asset('js/settings.js') }}"></script>
 <script src="{{ asset('js/todolist.js') }}"></script>
 <script src="{{ asset('js/jquery.cookie.js') }}"></script>
-<!-- Page scripts -->
-@stack('page-scripts')
     

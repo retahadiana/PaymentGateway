@@ -44,6 +44,29 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('wilayah.index') ? 'active' : '' }}" href="{{ route('wilayah.index') }}">
+                <span class="menu-title">Wilayah Indonesia</span>
+                <i class="mdi mdi-map-marker-multiple menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('kasir.*') ? 'active' : '' }}" data-bs-toggle="collapse" href="#kasirMenu" aria-expanded="{{ request()->routeIs('kasir.*') ? 'true' : 'false' }}" aria-controls="kasirMenu">
+                <span class="menu-title">Kasir</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-cash-register menu-icon"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('kasir.*') ? 'show' : '' }}" id="kasirMenu">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('kasir.index') ? 'active' : '' }}" href="{{ route('kasir.index') }}">Kasir POS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('kasir.laporan') ? 'active' : '' }}" href="{{ route('kasir.laporan') }}">Laporan Kasir</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pdfMenu" aria-expanded="false" aria-controls="pdfMenu">
                 <span class="menu-title">Generate PDF</span>
                 <i class="menu-arrow"></i>
