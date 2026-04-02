@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // register route middleware aliases (accepts an array of aliases)
         $middleware->alias([
-            'session.user' => \App\Http\Middleware\EnsureSessionUser::class,
+            'check.vendor' => \App\Http\Middleware\CheckVendor::class,
+            'check.admin' => \App\Http\Middleware\CheckAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -1,107 +1,70 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Category;
-use App\Models\Book;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\GeneratePdfController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\WilayahController;
-use App\Http\Controllers\KasirController;
+use App\Http\Controllers\VendorAccountController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\VendorController;
+use App\Http\Controllers\PaymentController;
 
+// Public routes
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
-// Auth
+// Auth routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Google OAuth
-Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])->name('auth.google.redirect');
-Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::get('/vendor/register', [VendorAccountController::class, 'showRegister'])->name('vendor.register');
+Route::post('/vendor/register', [VendorAccountController::class, 'register'])->name('vendor.register.store');
 
-// OTP Verification
-Route::get('/otp', [AuthController::class, 'showOtpForm'])->name('otp.form');
-Route::post('/otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+// Customer routes (guest allowed)
+Route::prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/vendor/{vendor}', [CustomerController::class, 'viewVendor'])->name('vendor-detail');
+    Route::get('/cart', [CustomerController::class, 'cart'])->name('cart');
+    Route::post('/cart/add', [CustomerController::class, 'addToCart'])->name('cart.add');
+    Route::put('/cart/{menuId}', [CustomerController::class, 'updateCartItem'])->name('cart.update');
+    Route::delete('/cart/{menuId}', [CustomerController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/clear', [CustomerController::class, 'clearCart'])->name('cart.clear');
+    Route::get('/orders', [CustomerController::class, 'myOrders'])->name('my-orders');
+    Route::get('/order/{pesanan}', [CustomerController::class, 'orderDetail'])->name('order-detail');
+    Route::post('/checkout', [CustomerController::class, 'checkout'])->name('checkout');
+    Route::get('/payment/{pesanan}', [PaymentController::class, 'show'])->name('payment');
+    Route::post('/payment/{pesanan}', [PaymentController::class, 'process'])->name('payment.process');
+    Route::get('/payment-status/{pesanan}', [PaymentController::class, 'virtualAccountInfo'])->name('payment-status');
+    Route::post('/payment/retry/{pesanan}', [PaymentController::class, 'retry'])->name('payment.retry');
+});
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Protected routes
+Route::middleware('auth')->group(function () {
 
-// Dashboard (protected)
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth','session.user']);
+    Route::prefix('admin')->name('admin.')->middleware('check.admin')->group(function () {
+        Route::get('/vendors', [VendorAccountController::class, 'index'])->name('vendors.index');
+        Route::post('/vendors', [VendorAccountController::class, 'store'])->name('vendors.store');
+    });
 
-// Category routes
-Route::get('/categories', [CategoryController::class, 'index'])->middleware(['auth','session.user']);
-Route::get('/categories/create', [CategoryController::class, 'create'])->middleware(['auth','session.user']);
-Route::post('/categories', [CategoryController::class, 'store'])->middleware(['auth','session.user']);
-Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->middleware(['auth','session.user']);
-Route::put('/categories/{category}', [CategoryController::class, 'update'])->middleware(['auth','session.user']);
-Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware(['auth','session.user']);
+    // Vendor routes
+    Route::prefix('vendor')->name('vendor.')->middleware('check.vendor')->group(function () {
+        Route::get('/dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
+        Route::get('/menu', [VendorController::class, 'menuList'])->name('menu-list');
+        Route::get('/menu/create', [VendorController::class, 'createMenu'])->name('create-menu');
+        Route::post('/menu', [VendorController::class, 'storeMenu'])->name('store-menu');
+        Route::get('/menu/{menu}/edit', [VendorController::class, 'editMenu'])->name('edit-menu');
+        Route::put('/menu/{menu}', [VendorController::class, 'updateMenu'])->name('update-menu');
+        Route::delete('/menu/{menu}', [VendorController::class, 'deleteMenu'])->name('delete-menu');
+        
+        Route::get('/orders', [VendorController::class, 'orders'])->name('orders');
+        Route::get('/order/{pesanan}', [VendorController::class, 'orderDetail'])->name('order-detail');
+        Route::put('/order/{pesanan}/status', [VendorController::class, 'updateOrderStatus'])->name('update-order-status');
+        Route::post('/order/{pesanan}/confirm-payment', [PaymentController::class, 'confirmPayment'])->name('confirm-payment');
+        
+        Route::get('/sales', [VendorController::class, 'sales'])->name('sales');
+    });
+});
 
-// Book routes
-Route::get('/books', [BookController::class, 'index'])->middleware(['auth','session.user']);
-Route::get('/books/create', [BookController::class, 'create'])->middleware(['auth','session.user']);
-Route::post('/books', [BookController::class, 'store'])->middleware(['auth','session.user']);
-Route::get('/books/{book}/edit', [BookController::class, 'edit'])->middleware(['auth','session.user']);
-Route::put('/books/{book}', [BookController::class, 'update'])->middleware(['auth','session.user']);
-Route::delete('/books/{book}', [BookController::class, 'destroy'])->middleware(['auth','session.user']);
+// Payment gateway webhook (tidak perlu auth)
+Route::post('/webhook/payment', [PaymentController::class, 'webhook'])->name('webhook.payment');
 
-// PDF generator (legacy single-page endpoints)
-// Route::get('/generate-pdf', [GeneratePdfController::class, 'index'])
-//     ->middleware(['auth','session.user'])
-//     ->name('pdf.generate');
-// Route::post('/generate-pdf', [GeneratePdfController::class, 'generate'])->middleware(['auth','session.user']);
-Route::get('/generate-pdf/download/{type}', [GeneratePdfController::class, 'download'])
-    ->whereIn('type', ['certificate', 'invitation'])
-    ->middleware(['auth','session.user']);
-
-// Separate pages for certificate and invitation
-Route::get('/generate-pdf/certificate', [GeneratePdfController::class, 'certificate'])
-    ->middleware(['auth','session.user'])
-    ->name('pdf.certificate');
-Route::post('/generate-pdf/certificate', [GeneratePdfController::class, 'generateCertificate'])
-    ->middleware(['auth','session.user']);
-
-Route::get('/generate-pdf/invitation', [GeneratePdfController::class, 'invitation'])
-    ->middleware(['auth','session.user'])
-    ->name('pdf.invitation');
-Route::post('/generate-pdf/invitation', [GeneratePdfController::class, 'generateInvitation'])
-    ->middleware(['auth','session.user']);
-
-Route::get('/barang', [BarangController::class, 'index'])->middleware(['auth','session.user']);
-Route::get('/barang/create', [BarangController::class, 'create'])->middleware(['auth','session.user']);
-Route::post('/barang', [BarangController::class, 'store'])->middleware(['auth','session.user']);
-Route::get('/barang/{id_barang}/edit', [BarangController::class, 'edit'])->middleware(['auth','session.user']);
-Route::put('/barang/{id_barang}', [BarangController::class, 'update'])->middleware(['auth','session.user']);
-Route::delete('/barang/{id_barang}', [BarangController::class, 'destroy'])->middleware(['auth','session.user']);
-Route::post('/cetak-label', [BarangController::class, 'cetak'])->middleware(['auth','session.user']);
-Route::get('/tugas-js', fn () => view('tugas-js'))->middleware(['auth','session.user'])->name('tugas.js');
-Route::get('/wilayah-indonesia', [WilayahController::class, 'index'])
-    ->middleware(['auth','session.user'])
-    ->name('wilayah.index');
-
-Route::get('/kasir', [KasirController::class, 'index'])
-    ->middleware(['auth','session.user'])
-    ->name('kasir.index');
-Route::get('/kasir/laporan', [KasirController::class, 'laporan'])
-    ->middleware(['auth','session.user'])
-    ->name('kasir.laporan');
-Route::get('/kasir/struk/{id}', [KasirController::class, 'struk'])
-    ->middleware(['auth','session.user'])
-    ->name('kasir.struk');
-Route::get('/api/barang/{kode}', [KasirController::class, 'cariBarang'])
-    ->middleware(['auth','session.user'])
-    ->name('kasir.cari-barang');
-Route::get('/api/barang-search', [KasirController::class, 'cariKode'])
-    ->middleware(['auth','session.user'])
-    ->name('kasir.cari-kode');
-Route::post('/penjualan/store', [KasirController::class, 'storeTransaksi'])
-    ->middleware(['auth','session.user'])
-    ->name('kasir.store');

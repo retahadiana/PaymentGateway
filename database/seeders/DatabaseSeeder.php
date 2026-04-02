@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Category;
-use App\Models\Book;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,46 +17,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // Ensure test user exists and has a bcrypt password
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@fastorder.test'],
             [
-                'name' => 'Test User',
+                'name' => 'Admin Fast Order',
+                'type' => 'customer',
+                'is_admin' => true,
                 'email_verified_at' => now(),
                 'password' => Hash::make('password'),
             ]
         );
 
-        // Seed categories
-        $novel = Category::firstOrCreate(['name' => 'Novel']);
-        $bio = Category::firstOrCreate(['name' => 'Biografi']);
-        $komik = Category::firstOrCreate(['name' => 'Komik']);
+        $vendor = User::firstOrCreate(
+            ['email' => 'vendor@fastorder.test'],
+            [
+                'name' => 'Vendor Demo',
+                'type' => 'vendor',
+                'id_vendor' => null,
+                'phone' => '081234567890',
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        // Seed books per assignment
-        Book::firstOrCreate([
-            'code' => 'NV-01'
-        ],[
-            'category_id' => $novel->id,
-            'title' => 'Home Sweet Loan',
-            'author' => 'Almira Bastari'
-        ]);
+        $vendor->forceFill(['id_vendor' => $vendor->id])->save();
 
-        Book::firstOrCreate([
-            'code' => 'BO-01'
-        ],[
-            'category_id' => $bio->id,
-            'title' => 'Mohammad Hatta, Untuk Negeriku',
-            'author' => 'Taufik Abdullah'
-        ]);
-
-        Book::firstOrCreate([
-            'code' => 'NV-02'
-        ],[
-            'category_id' => $novel->id,
-            'title' => 'Keajaiban Toko Kelontong Namiya',
-            'author' => 'Keigo Higashino'
-        ]);
+        Vendor::firstOrCreate(
+            ['id_vendor' => $vendor->id],
+            [
+                'nama_vendor' => 'Vendor Demo',
+                'email' => 'vendor@fastorder.test',
+                'phone' => '081234567890',
+                'alamat' => 'Alamat demo vendor',
+                'kota' => 'Jakarta',
+            ]
+        );
     }
 }

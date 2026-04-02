@@ -14,75 +14,58 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ url('/dashboard') }}">
-                <span class="menu-title">Dashboard</span>
-                <i class="mdi mdi-home menu-icon"></i>
-            </a>
+            @if(auth()->check() && auth()->user()->isVendor())
+                <a class="nav-link {{ request()->routeIs('vendor.dashboard') ? 'active' : '' }}" href="{{ route('vendor.dashboard') }}">
+                    <span class="menu-title">Dashboard Vendor</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            @else
+                <a class="nav-link {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}" href="{{ route('customer.dashboard') }}">
+                    <span class="menu-title">Dashboard Customer</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            @endif
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url('/categories') }}">
-                <span class="menu-title">Kategori</span>
-                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url('/books') }}">
-                <span class="menu-title">Buku</span>
-                <i class="mdi mdi-book-open-page-variant menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url('/barang') }}">
-                <span class="menu-title">Barang</span>
-                <i class="mdi mdi-package-variant-closed menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('tugas.js') ? 'active' : '' }}" href="{{ route('tugas.js') }}">
-                <span class="menu-title">Tugas JS</span>
-                <i class="mdi mdi-code-tags menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('wilayah.index') ? 'active' : '' }}" href="{{ route('wilayah.index') }}">
-                <span class="menu-title">Wilayah Indonesia</span>
-                <i class="mdi mdi-map-marker-multiple menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('kasir.*') ? 'active' : '' }}" data-bs-toggle="collapse" href="#kasirMenu" aria-expanded="{{ request()->routeIs('kasir.*') ? 'true' : 'false' }}" aria-controls="kasirMenu">
-                <span class="menu-title">Kasir</span>
-                <i class="menu-arrow"></i>
-                <i class="mdi mdi-cash-register menu-icon"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('kasir.*') ? 'show' : '' }}" id="kasirMenu">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('kasir.index') ? 'active' : '' }}" href="{{ route('kasir.index') }}">Kasir POS</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('kasir.laporan') ? 'active' : '' }}" href="{{ route('kasir.laporan') }}">Laporan Kasir</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#pdfMenu" aria-expanded="false" aria-controls="pdfMenu">
-                <span class="menu-title">Generate PDF</span>
-                <i class="menu-arrow"></i>
-                <i class="mdi mdi-file-pdf-box menu-icon"></i>
-            </a>
-            <div class="collapse" id="pdfMenu">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/generate-pdf/certificate') }}">Sertifikat</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/generate-pdf/invitation') }}">Undangan</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+
+        @if(auth()->check() && auth()->user()->isVendor())
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('vendor.orders') || request()->routeIs('vendor.order-detail') ? 'active' : '' }}" href="{{ route('vendor.orders') }}">
+                    <span class="menu-title">Pesanan</span>
+                    <i class="mdi mdi-receipt menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('vendor.menu-list') || request()->routeIs('vendor.create-menu') || request()->routeIs('vendor.edit-menu') ? 'active' : '' }}" href="{{ route('vendor.menu-list') }}">
+                    <span class="menu-title">Kelola Menu</span>
+                    <i class="mdi mdi-food menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('vendor.sales') ? 'active' : '' }}" href="{{ route('vendor.sales') }}">
+                    <span class="menu-title">Laporan Penjualan</span>
+                    <i class="mdi mdi-chart-line menu-icon"></i>
+                </a>
+            </li>
+        @else
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customer.my-orders') || request()->routeIs('customer.order-detail') ? 'active' : '' }}" href="{{ route('customer.my-orders') }}">
+                    <span class="menu-title">Pesanan Saya</span>
+                    <i class="mdi mdi-cart menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customer.cart') ? 'active' : '' }}" href="{{ route('customer.cart') }}">
+                    <span class="menu-title">Keranjang</span>
+                    <i class="mdi mdi-basket menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customer.dashboard') || request()->routeIs('customer.vendor-detail') ? 'active' : '' }}" href="{{ route('customer.dashboard') }}">
+                    <span class="menu-title">Jelajahi Vendor</span>
+                    <i class="mdi mdi-store menu-icon"></i>
+                </a>
+            </li>
+        @endif
     </ul>
 </nav>
 
