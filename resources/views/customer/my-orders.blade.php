@@ -262,8 +262,8 @@
                     @forelse($orders as $order)
                         @php
                             $orderDate = $order->created_at ?? $order->timestamp ?? null;
-                            $vendorName = optional(optional($order->detailPesanan->first())->menu->vendor)->nama_vendor
-                                ?? optional($order->vendor)->nama_vendor
+                            $vendorName = data_get($order, 'vendor.nama_vendor')
+                                ?? data_get($order, 'detailPesanan.0.menu.vendor.nama_vendor')
                                 ?? 'Vendor tidak diketahui';
                             $orderId = $order->{\App\Models\Pesanan::keyColumn()} ?? null;
                             $displayNoPesanan = $order->no_pesanan ?? $order->order_id ?? $orderId ?? '-';

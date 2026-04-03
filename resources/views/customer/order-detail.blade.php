@@ -17,6 +17,14 @@
 @endsection
 
 @section('content')
+    @php
+        $vendorName = data_get($pesanan, 'vendor.nama_vendor')
+            ?? data_get($pesanan, 'detailPesanan.0.menu.vendor.nama_vendor')
+            ?? 'Vendor tidak diketahui';
+        $metodeBayar = (string) ($pesanan->metode_bayar ?? '-');
+        $alamat = (string) ($pesanan->alamat_pengiriman ?? '-');
+    @endphp
+
     <div class="food-hero p-4 mb-4">
         <span class="food-chip mb-2"><i class="fas fa-receipt"></i> Order Detail</span>
         <h1 class="mb-0 food-title"><i class="fas fa-receipt me-2"></i>Detail Pesanan</h1>
@@ -50,7 +58,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <strong>Vendor:</strong><br>
-                            {{ optional(optional($pesanan->detailPesanan->first())->menu->vendor)->nama_vendor ?? optional($pesanan->vendor)->nama_vendor ?? 'Vendor tidak diketahui' }}
+                            {{ $vendorName }}
                         </div>
                         <div class="col-md-6">
                             <strong>Tanggal Pesanan:</strong><br>
@@ -63,11 +71,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <strong>Alamat Pengiriman:</strong><br>
-                            {{ $pesanan->alamat_pengiriman }}
+                            {{ $alamat }}
                         </div>
                         <div class="col-md-6">
                             <strong>Metode Pembayaran:</strong><br>
-                            {{ ucfirst(str_replace('_', ' ', $pesanan->metode_bayar)) }}
+                            {{ $metodeBayar === '-' ? '-' : ucfirst(str_replace('_', ' ', $metodeBayar)) }}
                         </div>
                     </div>
                     @if($pesanan->catatan)
@@ -95,14 +103,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($pesanan->detailPesanan as $detail)
+                                @forelse($pesanan->detailPesanan as $detail)
                                     <tr>
-                                        <td>{{ $detail->nama_menu }}</td>
-                                        <td>Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                        <td>{{ $detail->jumlah }}</td>
-                                        <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                        <td>{{ $detail->nama_menu ?? data_get($detail, 'menu.nama_menu') ?? '-' }}</td>
+                                        <td>Rp {{ number_format((float) ($detail->harga ?? 0), 0, ',', '.') }}</td>
+                                        <td>{{ (int) ($detail->jumlah ?? 0) }}</td>
+                                        <td>Rp {{ number_format((float) ($detail->subtotal ?? 0), 0, ',', '.') }}</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Belum ada item detail pada pesanan ini.</td>
+                                    </tr>
+                                @endforelse
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
                                     <td><strong>Rp {{ number_format($pesanan->total_harga ?? $pesanan->total ?? 0, 0, ',', '.') }}</strong></td>

@@ -34,6 +34,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
     Route::post('/checkout', [CustomerController::class, 'checkout'])->name('checkout');
     Route::get('/payment/{pesanan}', [PaymentController::class, 'show'])->name('payment');
     Route::post('/payment/{pesanan}', [PaymentController::class, 'process'])->name('payment.process');
+    Route::post('/payment/{pesanan}/sync-status', [PaymentController::class, 'syncStatus'])->name('payment.sync-status');
     Route::get('/payment-status/{pesanan}', [PaymentController::class, 'virtualAccountInfo'])->name('payment-status');
     Route::post('/payment/retry/{pesanan}', [PaymentController::class, 'retry'])->name('payment.retry');
 });
@@ -67,4 +68,6 @@ Route::middleware('auth')->group(function () {
 
 // Payment gateway webhook (tidak perlu auth)
 Route::post('/webhook/payment', [PaymentController::class, 'webhook'])->name('webhook.payment');
+Route::post('/payment/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::post('/payment/notification', [PaymentController::class, 'notificationHandler'])->name('payment.notification');
 

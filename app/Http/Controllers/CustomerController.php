@@ -221,10 +221,12 @@ class CustomerController extends Controller
                 $orderData['metode_bayar'] = $validated['metode_bayar'];
             }
             if (Schema::hasColumn('pesanan', 'status_bayar')) {
-                $orderData['status_bayar'] = 'pending';
+                $orderData['status_bayar'] = 'belum_bayar';
             }
-            if (Schema::hasColumn('pesanan', 'order_id')) {
-                $orderData['order_id'] = Pesanan::generateNoPesanan();
+
+            $orderNoColumn = Pesanan::noPesananColumn();
+            if (Schema::hasColumn('pesanan', $orderNoColumn)) {
+                $orderData[$orderNoColumn] = Pesanan::generateNoPesanan();
             }
             if (Schema::hasColumn('pesanan', 'catatan')) {
                 $orderData['catatan'] = $validated['catatan'] ?? null;
@@ -266,6 +268,11 @@ class CustomerController extends Controller
 
             // Clear cart
             $request->session()->forget('cart');
+
+            if (($validated['metode_bayar'] ?? 'cash') !== 'cash') {
+                return redirect()->route('customer.payment', $pesananId)
+                    ->with('success', 'Pesanan berhasil dibuat. Lanjutkan pembayaran via Midtrans.');
+            }
 
             return redirect()->route('customer.my-orders')
                 ->with('success', 'Pesanan berhasil dibuat. Silahkan lakukan pembayaran.');

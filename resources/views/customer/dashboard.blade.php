@@ -353,11 +353,15 @@
                         <div class="d-grid gap-2 mb-4">
                             <div class="rounded-4 p-3" style="background:#fff7ed;">
                                 <small class="text-muted d-block mb-1"><i class="fas fa-phone me-1"></i> Kontak</small>
-                                <div class="fw-semibold" style="color:#1e293b;">{{ $vendor->phone ?? 'Tidak tersedia' }}</div>
+                                <div class="fw-semibold" style="color:#1e293b;">
+                                    {{ filled($vendor->phone ?? null) ? $vendor->phone : (filled($vendor->email ?? null) ? $vendor->email : 'Tidak tersedia') }}
+                                </div>
                             </div>
                             <div class="rounded-4 p-3" style="background:#fff7ed;">
                                 <small class="text-muted d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i> Lokasi</small>
-                                <div class="fw-semibold" style="color:#1e293b;">{{ $vendor->alamat ?? 'Tidak tersedia' }}</div>
+                                <div class="fw-semibold" style="color:#1e293b;">
+                                    {{ filled($vendor->alamat ?? null) ? $vendor->alamat : (filled($vendor->kota ?? null) ? $vendor->kota : 'Tidak tersedia') }}
+                                </div>
                             </div>
                         </div>
 

@@ -85,12 +85,19 @@
                         </thead>
                         <tbody>
                             @foreach($sales as $sale)
+                                @php
+                                    $saleDateRaw = $sale->created_at ?? $sale->timestamp ?? null;
+                                    $saleDate = $saleDateRaw ? \Illuminate\Support\Carbon::parse($saleDateRaw)->format('d/m/Y H:i') : '-';
+                                    $saleOrderNo = $sale->no_pesanan ?? $sale->order_id ?? $sale->{\App\Models\Pesanan::keyColumn()} ?? '-';
+                                    $saleCustomer = $sale->nama_customer ?? $sale->nama ?? 'Guest';
+                                    $saleTotal = $sale->total_harga ?? $sale->total ?? 0;
+                                @endphp
                                 <tr>
-                                    <td><strong>{{ $sale->no_pesanan }}</strong></td>
-                                    <td>{{ $sale->created_at->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $sale->nama_customer }}</td>
+                                    <td><strong>{{ $saleOrderNo }}</strong></td>
+                                    <td>{{ $saleDate }}</td>
+                                    <td>{{ $saleCustomer }}</td>
                                     <td>{{ $sale->detailPesanan->sum('jumlah') }} item</td>
-                                    <td><strong>Rp {{ number_format($sale->total_harga, 0, ',', '.') }}</strong></td>
+                                    <td><strong>Rp {{ number_format($saleTotal, 0, ',', '.') }}</strong></td>
                                 </tr>
                             @endforeach
                         </tbody>

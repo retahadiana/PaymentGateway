@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Pesanan;
 use App\Models\Vendor;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -294,8 +295,11 @@ class VendorController extends Controller
         $from = $request->query('from', now()->subDays(30)->format('Y-m-d'));
         $to = $request->query('to', now()->format('Y-m-d'));
 
+        $fromDateTime = Carbon::parse($from)->startOfDay();
+        $toDateTime = Carbon::parse($to)->endOfDay();
+
         $sales = Pesanan::whereIn($orderKeyColumn, $orderIds)
-            ->whereBetween($timestampColumn, [$from, $to])
+            ->whereBetween($timestampColumn, [$fromDateTime, $toDateTime])
             ->where($statusBayarColumn, 'terbayar')
             ->with('detailPesanan')
             ->get();
