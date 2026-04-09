@@ -70,15 +70,25 @@
                         </td>
                         <td>{{ $menuDate ? \Illuminate\Support\Carbon::parse($menuDate)->format('d/m/Y') : '-' }}</td>
                         <td>
-                            <a href="{{ route('vendor.edit-menu', $menu->idmenu) }}" class="btn btn-sm btn-food-outline me-2">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('vendor.delete-menu', $menu->idmenu) }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ route('vendor.edit-menu', $menu->idmenu) }}"
+                                   class="btn btn-sm btn-food-outline d-inline-flex align-items-center gap-1 px-3"
+                                   aria-label="Edit menu {{ $menu->nama_menu }}">
+                                    <i class="fas fa-pen-to-square"></i>
+                                    <span>Edit</span>
+                                </a>
+
+                                <form action="{{ route('vendor.delete-menu', $menu->idmenu) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-3"
+                                            onclick="return confirm('Yakin ingin menghapus menu {{ $menu->nama_menu }}? Tindakan ini tidak bisa dibatalkan.')"
+                                            aria-label="Hapus menu {{ $menu->nama_menu }}">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Hapus</span>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

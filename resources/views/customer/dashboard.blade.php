@@ -334,6 +334,12 @@
     <div class="row g-4">
         @forelse($vendors as $vendor)
             <div class="col-md-4 mb-4">
+                @php
+                    $vendorLocation = collect([
+                        $vendor->alamat ?? null,
+                        $vendor->kota ?? null,
+                    ])->filter()->implode(', ');
+                @endphp
                 <div class="vendor-card h-100">
                     <div class="vendor-accent"></div>
                     <div class="card-body p-4 p-lg-4">
@@ -360,7 +366,7 @@
                             <div class="rounded-4 p-3" style="background:#fff7ed;">
                                 <small class="text-muted d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i> Lokasi</small>
                                 <div class="fw-semibold" style="color:#1e293b;">
-                                    {{ filled($vendor->alamat ?? null) ? $vendor->alamat : (filled($vendor->kota ?? null) ? $vendor->kota : 'Tidak tersedia') }}
+                                    {{ $vendorLocation !== '' ? $vendorLocation : 'Lokasi belum diisi' }}
                                 </div>
                             </div>
                         </div>

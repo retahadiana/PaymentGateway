@@ -48,9 +48,14 @@
 
                         <div class="mb-3">
                             <label for="kategori" class="form-label">Kategori <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('kategori') is-invalid @enderror" 
-                                   name="kategori" id="kategori" 
-                                   value="{{ old('kategori', $menu->kategori ?? '') }}" required>
+                            @php
+                                $selectedKategori = strtolower((string) old('kategori', $menu->kategori ?? ''));
+                            @endphp
+                            <select class="form-select @error('kategori') is-invalid @enderror" name="kategori" id="kategori" required>
+                                <option value="" disabled {{ $selectedKategori === '' ? 'selected' : '' }}>Pilih kategori</option>
+                                <option value="Makanan" {{ $selectedKategori === 'makanan' ? 'selected' : '' }}>Makanan</option>
+                                <option value="Minuman" {{ $selectedKategori === 'minuman' ? 'selected' : '' }}>Minuman</option>
+                            </select>
                             @error('kategori')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

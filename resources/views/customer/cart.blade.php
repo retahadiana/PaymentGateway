@@ -239,11 +239,14 @@
                                         <span class="fw-bold" style="color:#ea580c;">Rp {{ number_format($item['harga'], 0, ',', '.') }}</span>
                                     </td>
                                     <td>
-                                        <form action="{{ route('customer.cart.update', $item['idmenu']) }}" method="POST" class="d-flex gap-2 align-items-center">
+                                        <form action="{{ route('customer.cart.update', $item['idmenu']) }}" method="POST" class="d-flex gap-2 align-items-center flex-wrap">
                                             @csrf
                                             @method('PUT')
                                             <input type="number" name="qty" min="1" value="{{ $item['jumlah'] }}" class="form-control" style="width: 92px; border-radius: .9rem;">
-                                            <button type="submit" class="btn btn-sm btn-food-outline cart-action-btn">Update</button>
+                                            <button type="submit" class="btn btn-sm btn-food-outline d-inline-flex align-items-center gap-1 px-3 cart-action-btn">
+                                                <i class="fas fa-rotate-right"></i>
+                                                <span>Update</span>
+                                            </button>
                                         </form>
                                     </td>
                                     <td>
@@ -253,7 +256,12 @@
                                         <form action="{{ route('customer.cart.remove', $item['idmenu']) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger cart-action-btn">Hapus</button>
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-3 cart-action-btn"
+                                                    onclick="return confirm('Yakin ingin menghapus item ini dari keranjang?')">
+                                                <i class="fas fa-trash"></i>
+                                                <span>Hapus</span>
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>

@@ -301,15 +301,19 @@
                             <td>
                                 <div class="d-flex flex-wrap gap-2">
                                     @if($orderId)
-                                        <a href="{{ route('customer.order-detail', $orderId) }}" class="btn btn-sm btn-food-outline order-action-btn">
-                                            <i class="fas fa-eye me-1"></i> Detail
+                                        <a href="{{ route('customer.order-detail', $orderId) }}"
+                                           class="btn btn-sm btn-food-outline d-inline-flex align-items-center gap-1 px-3 order-action-btn">
+                                            <i class="fas fa-eye"></i>
+                                            <span>Detail</span>
                                         </a>
                                     @else
                                         <span class="text-muted">ID pesanan tidak valid</span>
                                     @endif
                                     @if($orderId && $order->status_bayar === 'belum_bayar')
-                                        <a href="{{ route('customer.payment', $orderId) }}" class="btn btn-sm btn-food order-action-btn">
-                                            <i class="fas fa-credit-card me-1"></i> Bayar
+                                        <a href="{{ route('customer.payment', $orderId) }}"
+                                           class="btn btn-sm btn-food d-inline-flex align-items-center gap-1 px-3 order-action-btn">
+                                            <i class="fas fa-credit-card"></i>
+                                            <span>Bayar</span>
                                         </a>
                                     @endif
                                 </div>

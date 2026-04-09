@@ -20,7 +20,7 @@
                     <i class="mdi mdi-home menu-icon"></i>
                 </a>
             @else
-                <a class="nav-link {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}" href="{{ route('customer.dashboard') }}">
+                <a class="nav-link {{ request()->routeIs('customer.dashboard') || request()->routeIs('customer.vendor-detail') ? 'active' : '' }}" href="{{ route('customer.dashboard') }}">
                     <span class="menu-title">Dashboard Customer</span>
                     <i class="mdi mdi-home menu-icon"></i>
                 </a>
@@ -57,12 +57,6 @@
                 <a class="nav-link {{ request()->routeIs('customer.cart') ? 'active' : '' }}" href="{{ route('customer.cart') }}">
                     <span class="menu-title">Keranjang</span>
                     <i class="mdi mdi-basket menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('customer.dashboard') || request()->routeIs('customer.vendor-detail') ? 'active' : '' }}" href="{{ route('customer.dashboard') }}">
-                    <span class="menu-title">Jelajahi Vendor</span>
-                    <i class="mdi mdi-store menu-icon"></i>
                 </a>
             </li>
         @endif

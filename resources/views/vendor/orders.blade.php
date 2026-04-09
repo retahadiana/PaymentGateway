@@ -83,8 +83,10 @@
                         <td>{{ $orderDate ? \Illuminate\Support\Carbon::parse($orderDate)->format('d/m/Y H:i') : '-' }}</td>
                         <td>
                             @if($orderId)
-                                <a href="{{ route('vendor.order-detail', $orderId) }}" class="btn btn-sm btn-food-outline">
-                                    <i class="fas fa-eye"></i> Detail
+                                <a href="{{ route('vendor.order-detail', $orderId) }}"
+                                   class="btn btn-sm btn-food-outline d-inline-flex align-items-center gap-1 px-3">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Detail</span>
                                 </a>
                             @else
                                 <span class="text-muted">-</span>

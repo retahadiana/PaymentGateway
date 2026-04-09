@@ -51,14 +51,53 @@
       }
 
       .sidebar .nav .nav-item .nav-link {
+        position: relative;
+        overflow: hidden;
+        padding-left: 1.35rem;
+        padding-right: 1rem;
         color: #7c2d12 !important;
         border-radius: 1rem;
         margin: .2rem .75rem;
-        transition: all .2s ease;
+        transition: transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+      }
+
+      .sidebar .nav .nav-item .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: .2rem;
+        width: 4px;
+        height: 0;
+        border-radius: 999px;
+        background: #fb923c;
+        transform: translateY(-50%);
+        transition: height .2s ease, opacity .2s ease;
+        opacity: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .sidebar .nav .nav-item .nav-link .menu-title,
+      .sidebar .nav .nav-item .nav-link .menu-icon {
+        position: relative;
+        z-index: 1;
+        color: #7c2d12 !important;
+        transition: color .2s ease;
       }
 
       .sidebar .nav .nav-item .nav-link:hover {
         background: #ffedd5;
+        color: #c2410c !important;
+        transform: translateX(2px);
+      }
+
+      .sidebar .nav .nav-item .nav-link:hover::before {
+        height: 58%;
+        opacity: 1;
+      }
+
+      .sidebar .nav .nav-item .nav-link:hover .menu-title,
+      .sidebar .nav .nav-item .nav-link:hover .menu-icon {
         color: #c2410c !important;
       }
 
@@ -66,6 +105,19 @@
         background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%);
         color: #fff !important;
         box-shadow: 0 10px 20px rgba(234, 88, 12, 0.18);
+      }
+
+      .sidebar .nav .nav-item .nav-link.active::before {
+        height: 64%;
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .sidebar .nav .nav-item .nav-link.active .menu-title,
+      .sidebar .nav .nav-item .nav-link.active .menu-icon,
+      .sidebar .nav .nav-item .nav-link.active span,
+      .sidebar .nav .nav-item .nav-link.active i {
+        color: #ffffff !important;
       }
 
       .sidebar .nav .nav-item .nav-link.active .menu-icon,
@@ -174,10 +226,10 @@
 
       .sidebar > a.active,
       .sidebar > div > a.active {
-        background: linear-gradient(135deg, #b66dff 0%, #d084f5 100%);
+        background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%);
         color: #ffffff !important;
         font-weight: 600;
-        box-shadow: 0 10px 20px rgba(182, 109, 255, 0.2);
+        box-shadow: 0 10px 20px rgba(234, 88, 12, 0.18);
       }
 
       .sidebar > a.active i,
